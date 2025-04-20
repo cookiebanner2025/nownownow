@@ -64,7 +64,7 @@ const config = {
         acceptOnScroll: false, // Accept cookies when user scrolls
         acceptOnContinue: true, // Implicit consent when continuing to browse
         floatingButtonPosition: 'left', // 'left' or 'right'
-        bannerPosition: 'left', // 'left', 'right', or 'center'
+        bannerPosition: 'center', // 'left', 'right', or 'center'
         bannerWidth: '440px', // Default banner width
         bannerHeight: 'auto', // Default banner height
         delayShow: 0, // Delay in seconds before showing banner (0 = immediate)
@@ -112,7 +112,7 @@ const config = {
         
         // Logo settings
         showLogo: true,
-        logoUrl: '', // Leave empty to auto-detect website logo
+        logoUrl: 'https://dev-rpractice.pantheonsite.io/wp-content/uploads/2020/03/white-logo.png', // Leave empty to auto-detect website logo
         logoPosition: 'left', // 'left' or 'right'
         logoSize: '40px'
     }
