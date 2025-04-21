@@ -840,9 +840,6 @@ function injectConsentHTML(detectedCookies, language = 'en') {
         return `
         <div class="cookie-category">
             <div class="toggle-container">
-               
-
-            <div class="toggle-container">
                 <h3>${lang[categoryKey]}</h3>
                 <p>${lang[`${categoryKey}Desc`]}</p>
                 ${!isEssential ? `
@@ -1269,44 +1266,8 @@ function initCookieConsent() {
         }
     }
     
-// Track marketing parameters from URL
-function trackMarketingParameters() {
-    const params = new URLSearchParams(window.location.search);
-    const marketingParams = {};
-    
-    // Common marketing parameters to track
-    const trackedParams = [
-        'gclid',        // Google Ads
-        'fbclid',       // Facebook
-        'utm_source',   // Campaign source
-        'utm_medium',   // Campaign medium
-        'utm_campaign', // Campaign name
-        'utm_term',     // Campaign term
-        'utm_content',  // Campaign content
-        'dclid',        // Display Ads
-        'gbraid',       // Google Ads (app)
-        'wbraid',       // Google Ads (web)
-        'msclkid'       // Microsoft Advertising
-    ];
-    
-    // Collect all marketing parameters
-    trackedParams.forEach(param => {
-        if (params.has(param)) {
-            marketingParams[param] = params.get(param);
-        }
-    });
-    
-    // Push to dataLayer if any parameters found
-    if (Object.keys(marketingParams).length > 0) {
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'marketingParametersDetected',
-            'marketingParams': marketingParams
-        });
-        
-        // Store in sessionStorage for later use
-        sessionStorage.setItem('marketingParams', JSON.stringify(marketingParams));
-    }
+    // Track marketing parameters from URL
+    trackMarketingParameters();
 }
 
 // Initialize when DOM is ready
@@ -1925,11 +1886,6 @@ function injectStyles() {
     document.head.appendChild(style);
 }
 
-
-
-
-
-
 // Initialize styles when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', injectStyles);
@@ -2009,7 +1965,7 @@ function scanCookiesWithDuration() {
         
         // Check against known cookie patterns
         for (const pattern in cookieDatabase) {
-            if (name.startsWith(pattern) {
+            if (name.startsWith(pattern)) {
                 const info = cookieDatabase[pattern];
                 categorized[info.category].push({
                     name: name,
@@ -2192,7 +2148,6 @@ function initAccessibility() {
     document.head.appendChild(style);
 }
 
-
 // Final initialization wrapper
 function finalInit() {
     // Check domain restrictions
@@ -2295,321 +2250,3 @@ if (typeof window.ultimateGDPR === 'object') {
         console.error('GDPR Cookie Consent initialization error:', e);
     }
 })();
-
-// Cookie category tooltips
-function addCategoryTooltips() {
-    const tooltipData = {
-        functional: {
-            title: "Essential Cookies",
-            description: "Required for basic site functionality. Cannot be disabled."
-        },
-        analytics: {
-            title: "Analytics Cookies",
-            description: "Help us understand how visitors interact with our site."
-        },
-        performance: {
-            title: "Performance Cookies",
-            description: "Enhance site speed and functionality."
-        },
-        advertising: {
-            title: "Advertising Cookies",
-            description: "Used for personalized advertising across sites."
-        },
-        uncategorized: {
-            title: "Unclassified Cookies",
-            description: "New cookies being reviewed for classification."
-        }
-    };
-
-    document.querySelectorAll('.cookie-category').forEach(category => {
-        const input = category.querySelector('input[type="checkbox"]');
-        if (!input) return;
-        
-        const categoryType = input.dataset.category;
-        const info = tooltipData[categoryType];
-        
-        if (info) {
-            const tooltip = document.createElement('div');
-            tooltip.className = 'cookie-tooltip';
-            tooltip.innerHTML = `
-                <span class="tooltip-icon">i</span>
-                <div class="tooltip-content">
-                    <h4>${info.title}</h4>
-                    <p>${info.description}</p>
-                </div>
-            `;
-            category.querySelector('.toggle-container').appendChild(tooltip);
-        }
-    });
-}
-
-// Accessibility initialization
-function initAccessibility() {
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        const modal = document.getElementById('cookieSettingsModal');
-        if (modal && modal.style.display === 'block') {
-            if (e.key === 'Escape') {
-                hideSettingsModal();
-            }
-            
-            // Trap focus inside modal
-            if (e.key === 'Tab') {
-                const focusable = modal.querySelectorAll('button, input, select, a[href]');
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-                
-                if (e.shiftKey && document.activeElement === first) {
-                    last.focus();
-                    e.preventDefault();
-                } else if (!e.shiftKey && document.activeElement === last) {
-                    first.focus();
-                    e.preventDefault();
-                }
-            }
-        }
-    });
-    
-    // ARIA attributes
-    const banner = document.getElementById('cookieConsentBanner');
-    if (banner) {
-        banner.setAttribute('role', 'dialog');
-        banner.setAttribute('aria-labelledby', 'cookieBannerTitle');
-        banner.setAttribute('aria-describedby', 'cookieBannerDesc');
-        
-        const title = banner.querySelector('h2');
-        if (title) title.id = 'cookieBannerTitle';
-        
-        const desc = banner.querySelector('p');
-        if (desc) desc.id = 'cookieBannerDesc';
-    }
-    
-           // Focus styles (continuing from previous)
-    const style = document.createElement('style');
-    style.textContent = `
-    .cookie-btn:focus, .toggle-switch input:focus + .toggle-slider {
-        outline: 2px solid ${config.colors.light.secondary};
-        outline-offset: 2px;
-    }
-    .dark-mode .cookie-btn:focus, .dark-mode .toggle-switch input:focus + .toggle-slider {
-        outline-color: ${config.colors.dark.secondary};
-    }`;
-    document.head.appendChild(style);
-}
-
-// ======================== CORE FUNCTIONALITY ======================== //
-
-function scanCookiesWithDuration() {
-    const cookies = document.cookie.split(';');
-    const result = {
-        functional: [], 
-        analytics: [],
-        performance: [],
-        advertising: [],
-        uncategorized: []
-    };
-
-    cookies.forEach(cookie => {
-        const [name, value] = cookie.trim().split('=');
-        if (!name) return;
-
-        // 1. Check against known cookies
-        let found = false;
-        for (const pattern in cookieDatabase) {
-            if (name === pattern || name.startsWith(pattern)) {
-                const info = cookieDatabase[pattern];
-                result[info.category].push({
-                    name: name,
-                    value: value || '',
-                    duration: info.duration || getCookieDuration(name),
-                    description: info.description || 'Unknown purpose'
-                });
-                found = true;
-                break;
-            }
-        }
-
-        // 2. Auto-categorize unknown cookies
-        if (!found && name !== 'cookie_consent') {
-            const category = determineCookieCategory(name);
-            if (category) {
-                result[category].push({
-                    name: name,
-                    value: value || '',
-                    duration: getCookieDuration(name),
-                    description: 'Automatically categorized'
-                });
-            } else {
-                result.uncategorized.push({
-                    name: name,
-                    value: value || '',
-                    duration: getCookieDuration(name),
-                    description: 'Unknown purpose'
-                });
-            }
-        }
-    });
-
-    return result;
-}
-
-function determineCookieCategory(name) {
-    const lowerName = name.toLowerCase();
-    if (/_ga|_gid|_gat|analytics|stats|measure|track/.test(lowerName)) 
-        return 'analytics';
-    if (/_gcl|_fbp|fr|ad|ads|marketing|doubleclick/.test(lowerName)) 
-        return 'advertising'; 
-    if (/sess|token|auth|login|user|pref|settings/.test(lowerName))
-        return 'functional';
-    if (/perf|speed|optimize|cdn|cache/.test(lowerName))
-        return 'performance';
-    return null;
-}
-
-function getCookieDuration(name) {
-    const expiresMatch = document.cookie.match(
-        new RegExp(`${name}=[^;]+; expires=([^;]+)`)
-    );
-    if (!expiresMatch) return "Session";
-    
-    const expiryDate = new Date(expiresMatch[1]);
-    const diffDays = Math.round((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
-    
-    return diffDays > 0 ? `${diffDays} day${diffDays !== 1 ? 's' : ''}` : "Expired";
-}
-
-// ======================== DATA MANAGEMENT ======================== //
-
-function exportCookieData(format = 'json') {
-    const data = {
-        timestamp: new Date().toISOString(),
-        consent: getCookie('cookie_consent'),
-        cookies: scanCookiesWithDuration(),
-        config: JSON.parse(JSON.stringify(config))
-    };
-
-    const blob = new Blob([
-        format === 'json' 
-            ? JSON.stringify(data, null, 2)
-            : convertToCSV(data.cookies)
-    ], {
-        type: format === 'json' ? 'application/json' : 'text/csv'
-    });
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `cookie-consent-${new Date().toISOString().split('T')[0]}.${format}`;
-    a.click();
-    URL.revokeObjectURL(url);
-}
-
-function convertToCSV(cookies) {
-    let csv = "Category,Name,Value,Duration,Description\n";
-    for (const [category, items] of Object.entries(cookies)) {
-        items.forEach(item => {
-            csv += `"${category}","${item.name}","${item.value}","${item.duration}","${item.description.replace(/"/g, '""')}"\n`;
-        });
-    }
-    return csv;
-}
-
-function importCookieConsent(data) {
-    try {
-        const consent = typeof data === 'string' ? JSON.parse(data) : data;
-        if (!consent.consent) return false;
-
-        setCookie('cookie_consent', consent.consent, 365);
-        
-        if (consent.consent === 'all') {
-            setConsentMode(true, true, true, true);
-        } else if (consent.consent === 'none') {
-            setConsentMode(false, false, false, false);
-        } else if (consent.consent.startsWith('custom:')) {
-            const [_, analytics, performance, advertising] = consent.consent.split(':');
-            setConsentMode(true, analytics === '1', performance === '1', advertising === '1');
-        }
-        
-        return true;
-    } catch (e) {
-        console.error("Import failed:", e);
-        return false;
-    }
-}
-
-// ======================== UTILITIES ======================== //
-
-function syncConsentAcrossSubdomains() {
-    const consent = getCookie('cookie_consent');
-    if (!consent) return;
-    
-    const domainParts = window.location.hostname.split('.');
-    if (domainParts.length > 2) {
-        const rootDomain = domainParts.slice(-2).join('.');
-        setCookie('cookie_consent', consent, 365, '/', `.${rootDomain}`);
-    }
-}
-
-function checkForPolicyUpdates() {
-    const currentVersion = '4.2';
-    const storedVersion = getCookie('cookie_policy_version');
-    
-    if (storedVersion !== currentVersion) {
-        setCookie('cookie_policy_version', currentVersion, 365);
-        if (storedVersion) {
-            eraseCookie('cookie_consent');
-            showBanner();
-        }
-    }
-}
-
-// ======================== GLOBAL EXPORT ======================== //
-
-if (typeof window !== 'undefined') {
-    window.ultimateGDPR = {
-        // UI Controls
-        showBanner: showBanner,
-        hideBanner: hideBanner,
-        showSettings: showSettingsModal,
-        
-        // Data Management
-        exportData: exportCookieData,
-        importConsent: importCookieConsent,
-        scanCookies: scanCookiesWithDuration,
-        
-        // Configuration
-        getConfig: () => JSON.parse(JSON.stringify(config)),
-        updateConfig: (newConfig) => {
-            Object.assign(config, newConfig);
-            initCookieConsent();
-        },
-        
-        // Status
-        getConsent: () => getCookie('cookie_consent')
-    };
-}
-
-// ======================== INITIALIZATION VERIFICATION ======================== //
-
-(function verifyInitialization() {
-    const required = {
-        config: 'object',
-        translations: 'object',
-        cookieDatabase: 'object'
-    };
-    
-    let valid = true;
-    Object.entries(required).forEach(([name, type]) => {
-        if (typeof window[name] !== type) {
-            console.error(`Missing or invalid ${name}`);
-            valid = false;
-        }
-    });
-
-    if (valid) {
-        console.log('GDPR Cookie Consent initialized successfully');
-    } else {
-        console.error('GDPR Cookie Consent initialization failed');
-    }
-})();
-
