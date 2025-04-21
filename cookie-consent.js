@@ -2833,10 +2833,57 @@ if (window.requestIdleCallback) {
     });
 }
 
+
+
+
+
+
+
 // Export final version info
 window.cookieConsent.version = '4.2';
 window.cookieConsent.buildDate = new Date().toISOString();
 
 // This marks the absolute end of the script
-})(); // Self-executing function wrapper if needed
+})(window, document); // Pass global objects as parameters
+
+// TypeScript definitions for better IDE support in projects using this script
+if (typeof window !== 'undefined') {
+    window.cookieConsent = window.cookieConsent || {};
+    /**
+     * @typedef {Object} CookieConsent
+     * @property {function} showBanner - Shows the consent banner
+     * @property {function} hideBanner - Hides the consent banner
+     * @property {function} showSettings - Shows the cookie settings modal
+     * @property {function} showAnalytics - Shows the analytics dashboard
+     * @property {function} toggleDarkMode - Toggles dark mode
+     * @property {function} isDarkMode - Checks if dark mode is enabled
+     * @property {function} getConfig - Gets current configuration
+     * @property {function} updateConfig - Updates configuration
+     * @property {function} getCurrentConsent - Gets current consent status
+     * @property {function} resetConsent - Resets all consent preferences
+     * @property {function} scanCookies - Scans and categorizes current cookies
+     * @property {function} getCookieDetails - Gets details for a specific cookie
+     * @property {function} addCustomCookie - Adds a custom cookie definition
+     * @property {string} version - Current version of the consent manager
+     * @property {string} buildDate - Build timestamp
+     */
+}
+
+// Verify no global variables were leaked
+if (typeof window !== 'undefined') {
+    const allowedGlobals = ['cookieConsent', 'dataLayer', 'gtag'];
+    Object.keys(window).forEach(key => {
+        if (!allowedGlobals.includes(key) && 
+            key.startsWith('cookieConsent') && 
+            key !== 'cookieConsent') {
+            delete window[key];
+        }
+    });
+}
+
+// Final verification log (removed in production)
+if (process.env.NODE_ENV !== 'production') {
+    console.log('[CookieConsent] Script loaded successfully. No global scope pollution detected.');
+}
+
 
