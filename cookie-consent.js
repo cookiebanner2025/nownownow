@@ -243,6 +243,7 @@ function updateUIForColorScheme(colorScheme) {
         } else if (button.classList.contains('reject-btn')) {
             button.style.color = colorScheme.danger;
             button.style.borderColor = colorScheme.danger;
+            button.style.backgroundColor = colorScheme.background;
         } else if (button.classList.contains('save-btn')) {
             button.style.backgroundColor = colorScheme.secondary;
         }
@@ -251,6 +252,7 @@ function updateUIForColorScheme(colorScheme) {
     // Update modal
     const modal = document.getElementById('cookieSettingsModal');
     if (modal) {
+        modal.style.backgroundColor = colorScheme.modalBg;
         modal.querySelector('.cookie-settings-content').style.backgroundColor = colorScheme.modalBg;
         modal.querySelectorAll('h2, h3').forEach(el => el.style.color = colorScheme.textDark);
         modal.querySelectorAll('p').forEach(el => el.style.color = colorScheme.textLight);
@@ -271,7 +273,10 @@ function updateUIForColorScheme(colorScheme) {
     // Update dashboard
     const dashboard = document.getElementById('cookieAnalyticsModal');
     if (dashboard) {
+        dashboard.style.backgroundColor = colorScheme.dashboardBg;
         dashboard.querySelector('.cookie-analytics-content').style.backgroundColor = colorScheme.dashboardBg;
+        dashboard.querySelectorAll('h2, h3, h4').forEach(el => el.style.color = colorScheme.textDark);
+        dashboard.querySelectorAll('p, .stat-bar-label, .stat-percentage').forEach(el => el.style.color = colorScheme.textLight);
     }
 }
 
@@ -803,15 +808,25 @@ function injectConsentHTML(detectedCookies, language = 'en') {
     const currentTheme = getCurrentColorScheme();
     
     // Generate dark mode toggle if enabled
-    const darkModeToggle = config.uiConfig.darkMode.enabled ? `
-    <div class="dark-mode-toggle">
-        <label class="toggle-switch">
-            <input type="checkbox" id="darkModeToggle" ${isDarkModeEnabled() ? 'checked' : ''}>
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">${lang.darkMode}</span>
-        </label>
-    </div>` : '';
-    
+   // Generate dark mode toggle if enabled
+const darkModeToggle = config.uiConfig.darkMode.enabled ? `
+<div class="dark-mode-toggle" style="position: absolute; top: ${config.uiConfig.darkMode.position?.top || '15px'}; 
+    left: ${config.uiConfig.darkMode.position?.left || 'auto'}; 
+    right: ${config.uiConfig.darkMode.position?.right || '15px'}; 
+    bottom: ${config.uiConfig.darkMode.position?.bottom || 'auto'};">
+    <label class="toggle-switch">
+        <input type="checkbox" id="darkModeToggle" ${isDarkModeEnabled() ? 'checked' : ''}>
+        <span class="toggle-slider"></span>
+    </label>
+</div>` : '';
+    <div class="cookie-consent-content">
+    <h2>${lang.title}</h2>
+    <p>${lang.description}</p>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="/privacy-policy/" class="privacy-policy-link">${lang.privacy}</a>
+        ${darkModeToggle}
+    </div>
+</div>
     // Generate cookie tables for each category
     const generateCategorySection = (category) => {
         const cookies = detectedCookies[category];
@@ -1157,6 +1172,8 @@ function injectConsentHTML(detectedCookies, language = 'en') {
         justify-content: center;
         opacity: 1;
     }
+
+    
 
     .cookie-settings-content {
         background-color: ${currentTheme.modalBg};
@@ -1861,19 +1878,20 @@ function initializeCookieConsent(detectedCookies, language) {
     }
     
     // Setup cookie details toggles
-    document.querySelectorAll('.cookie-details-header').forEach(header => {
-        header.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            const toggle = this.querySelector('.toggle-details');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                toggle.textContent = '−';
-            } else {
-                content.style.display = 'none';
-                toggle.textContent = '+';
-            }
-        });
+// Setup cookie details toggles
+document.querySelectorAll('.cookie-details-header').forEach(header => {
+    header.addEventListener('click', function() {
+        const content = this.nextElementSibling;
+        const toggle = this.querySelector('.toggle-details');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            toggle.textContent = '−';
+        } else {
+            content.style.display = 'none';
+            toggle.textContent = '+';
+        }
     });
+});
     
     // Setup language selector change event
     const languageSelect = document.getElementById('cookieLanguageSelect');
@@ -2048,11 +2066,12 @@ function showCookieBanner() {
 
 function hideCookieBanner() {
     const banner = document.getElementById('cookieConsentBanner');
-    banner.classList.remove('show');
+    banner.style.opacity = '0';
+    banner.style.transform = 'translateY(20px)';
     setTimeout(() => {
         banner.style.display = 'none';
     }, 400);
-}
+
 
 function showCookieSettings() {
     const modal = document.getElementById('cookieSettingsModal');
@@ -2065,7 +2084,9 @@ function showCookieSettings() {
 
 function hideCookieSettings() {
     const modal = document.getElementById('cookieSettingsModal');
-    modal.classList.remove('show');
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
+    modal.querySelector('.cookie-settings-content').style.transform = 'translateY(20px)';
     setTimeout(() => {
         modal.style.display = 'none';
     }, 300);
@@ -2092,12 +2113,13 @@ function showAnalyticsDashboard() {
 
 function hideAnalyticsDashboard() {
     const modal = document.getElementById('cookieAnalyticsModal');
-    modal.classList.remove('show');
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
+    modal.querySelector('.cookie-analytics-content').style.transform = 'translateY(20px)';
     setTimeout(() => {
         modal.style.display = 'none';
     }, 300);
 }
-
 function updateConsentMode(consentData) {
     const consentStates = {
         'ad_storage': consentData.categories.advertising ? 'granted' : 'denied',
