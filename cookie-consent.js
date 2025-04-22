@@ -970,7 +970,7 @@ const translations = {
         statsPercentage: "Perċentwal",
         statsLast7Days: "Aħħar 7 Ġranet",
         statsLast30Days: "Aħħar 30 Ġranet"
-    },
+    }
 
 };
 
