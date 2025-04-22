@@ -971,19 +971,74 @@ const translations = {
         statsLast7Days: "Aħħar 7 Ġranet",
         statsLast30Days: "Aħħar 30 Ġranet"
     },
+ // ... (keep all other language translations the same)
 
 };
 
-// Country to language mapping for auto-translation
 // Country to language mapping for auto-translation
 const countryLanguageMap = {
-    'AT': 'de', 'BE': 'nl', 'BE': 'fr', 'BG': 'bg', 'HR': 'hr', 'CY': 'el',
-    'CZ': 'cs', 'DK': 'da', 'EE': 'et', 'FI': 'fi', 'FR': 'fr', 'DE': 'de',
-    'GR': 'el', 'HU': 'hu', 'IE': 'en', 'IT': 'it', 'LV': 'lv', 'LT': 'lt',
-    'LU': 'fr', 'LU': 'de', 'MT': 'mt', 'NL': 'nl', 'PL': 'pl', 'PT': 'pt',
-    'RO': 'ro', 'SK': 'sk', 'SI': 'sl', 'ES': 'es', 'SE': 'sv', 'GB': 'en',
-    'US': 'en', 'CA': 'en', 'CA': 'fr'
+    // EU Countries
+    'AT': 'de',     // Austria
+    'BE': 'nl',     // Belgium (Dutch)
+    'BE': 'fr',     // Belgium (French)
+    'BG': 'bg',     // Bulgaria
+    'HR': 'hr',     // Croatia
+    'CY': 'el',     // Cyprus
+    'CZ': 'cs',     // Czech Republic
+    'DK': 'da',     // Denmark
+    'EE': 'et',     // Estonia
+    'FI': 'fi',     // Finland
+    'FR': 'fr',     // France
+    'DE': 'de',     // Germany
+    'GR': 'el',     // Greece
+    'HU': 'hu',     // Hungary
+    'IE': 'en',     // Ireland
+    'IT': 'it',     // Italy
+    'LV': 'lv',     // Latvia
+    'LT': 'lt',     // Lithuania
+    'LU': 'fr',     // Luxembourg
+    'LU': 'de',     // Luxembourg
+    'MT': 'mt',     // Malta
+    'NL': 'nl',     // Netherlands
+    'PL': 'pl',     // Poland
+    'PT': 'pt',     // Portugal
+    'RO': 'ro',     // Romania
+    'SK': 'sk',     // Slovakia
+    'SI': 'sl',     // Slovenia
+    'ES': 'es',     // Spain
+    'SE': 'sv',     // Sweden
+    
+    // Other European countries
+    'AL': 'en',     // Albania
+    'BA': 'en',     // Bosnia and Herzegovina
+    'IS': 'en',     // Iceland
+    'LI': 'de',     // Liechtenstein
+    'MK': 'en',     // North Macedonia
+    'NO': 'en',     // Norway
+    'RS': 'en',     // Serbia
+    'CH': 'de',     // Switzerland
+    'CH': 'fr',     // Switzerland
+    'CH': 'it',     // Switzerland
+    'UA': 'uk',     // Ukraine
+    'GB': 'en',     // United Kingdom
+    
+    // Rest of the world
+    'US': 'en',     // United States
+    'CA': 'en',     // Canada
+    'CA': 'fr',     // Canada (French)
+    'AU': 'en',     // Australia
+    'NZ': 'en',     // New Zealand
+    'ZA': 'en',     // South Africa
+    'IN': 'en',     // India
+    'CN': 'zh',     // China
+    'JP': 'ja',     // Japan
+    'KR': 'ko',     // South Korea
+    'BR': 'pt',     // Brazil
+    'MX': 'es',     // Mexico
+    'AR': 'es',     // Argentina
+    'RU': 'ru'      // Russia
 };
+
 
 
 // Analytics data storage
