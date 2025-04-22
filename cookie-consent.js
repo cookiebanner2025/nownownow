@@ -19,11 +19,11 @@ const config = {
         rememberLanguage: true,
         acceptOnScroll: false,
         acceptOnContinue: true,
-        showFloatingButton: true,
-        showAdminButton: true,
-        floatingButtonPosition: 'right',
-        adminButtonPosition: 'left',
-        bannerPosition: 'right',
+        showFloatingButton: true, // New: Control for normal cookie floating icon
+        showAdminButton: true,  // New: Control for admin dashboard floating icon
+        floatingButtonPosition: 'right', // 'left' or 'right'
+        adminButtonPosition: 'left', // 'left' or 'right'
+        bannerPosition: 'right', // 'left' or 'right'
         bannerAnimation: {
             duration: 0.4,
             easing: 'cubic-bezier(0.25, 0.8, 0.25, 1)',
@@ -40,30 +40,30 @@ const config = {
     
     // Language configuration
     languageConfig: {
-        defaultLanguage: 'en',
-        availableLanguages: [], // Keep 2 languages as requested
-        showLanguageSelector: true,
-        autoDetectLanguage: true
+        defaultLanguage: 'en', // Default language if auto-detection fails
+        availableLanguages: [], // Empty array = all languages available, for specify lanauge use like this ['en', 'fr'],
+        showLanguageSelector: true, // Show/hide language dropdown
+        autoDetectLanguage: true // Auto-detect language based on country/browser
     },
     
     // Geo-targeting configuration
     geoConfig: {
-        allowedCountries: [],
-        allowedRegions: [],
-        allowedCities: [],
-        blockedCountries: [],
-        blockedRegions: [],
-        blockedCities: []
+        allowedCountries: [],  // Only show in these countries (empty array = all countries) ['US', 'CA']
+        allowedRegions: [],    // Only show in these regions/states (empty array = all regions)['California', 'New York']
+        allowedCities: [],   // Only show in these cities (empty array = all cities)['Los Angeles', 'San Francisco']
+        blockedCountries: [], // Countries where banner should be hidden ['US', 'CA']
+        blockedRegions: [],  // Regions where banner should be hidden ['California', 'New York']
+        blockedCities: [] // Cities where banner should be hidden ['Los Angeles', 'San Francisco']
     },
     
     // Analytics configuration
     analytics: {
         enabled: true,
-        storageDays: 365,
-        showDashboard: true,
+        storageDays: 365, // How long to keep analytics data
+        showDashboard: true, // Show analytics dashboard button
         passwordProtect: true,
         dashboardPassword: 'admin123', // Change this in production
-        passwordCookieDuration: 365,
+        passwordCookieDuration: 365, // Days to remember password
         trackPageViews: true,
         trackEvents: true,
         trackConsentChanges: true
