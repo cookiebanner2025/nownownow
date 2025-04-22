@@ -6,6 +6,7 @@
  * - Multi-language support
  */
 
+
 // ============== CONFIGURATION SECTION ============== //
 const config = {
     // Domain restriction
